@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>iOS上传IPA</title>
+    <link rel="stylesheet" th:href="@{/css/dropzone.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="header">
+    <div class="header_inner_box">
+        <div class="logo_box"><img src="images/logo.png" alt="" title=""></div>
+    </div>
+</div>
+<div class="main clearfix">
+    <div class="upload_area">
+        <h2>支持拖拽哦</h2>
+        <div class="dropzone_info">
+            <form action="" class="dropzone needsclick" id="upload_files">
+                <div class="move_box dz-message needsclick">
+                    <p class="move_pic" id="move_pic"></p>
+                    <p class="left_txt">拖拽到此处上传</p>
+                </div>
+            </form>
+        </div>
+        <input type="button" class="btn_box" id="select_files" value="选择文件"/>
+
+        <p class="tip">请选择您要上传的IPA包</p>
+    </div>
+    <div class="upload_result">
+        <ul class="table_header">
+            <li class="file_name">文件名称</li>
+            <li>大小</li>
+            <li>状态</li>
+        </ul>
+        <div class="file_list" id="file_list">
+            <!-- div class="file_list_inner">
+                <ul>
+                    <li class="file_name">appname.ipa</li>
+                    <li>100MB以内的文件</li>
+                    <li>完成</li>
+                </ul>
+                <div class="progress-bar progress-bar-success" style="height:50px; width:100%"></div>
+            </div -->
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/dropzone.min.js}"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+
+        Dropzone.autoDiscover = false;
+
+        var fileVerify = function (msg) {
+            console.log(msg);
+        };
+        var currentUploadFileID = "";
+
+        var MyDropZone = new Dropzone("#upload_files", {
+            //url:"/uploader/test",
+            url: "/uploadFiles",
+            paramName: "book_files",
+            acceptedFiles: ".ipa",
+            maxFilesize: 100,
+            maxFiles: 1,
+            clickable: "#select_files",
+            init: function () {
+                this.on("addedfile", function (file) {
+                    this.processingID = "book_" + Math.round(Math.random() * 10000000000);
+                    createFileDetail(file, this.processingID);
+                });
+                this.on("processing", function (file) {
+                });
+                this.on("totaluploadprogress", function (progress) {
+                    document.querySelector('#' + this.processingID + ' .upload_status').style.width = progress + "%";
+                });
+                this.on("sending", function (file) {
+                    document.querySelector('#' + this.processingID + ' .upload_status').style.opacity = "1";
+                });
+
+                this.on("queuecomplete", function (progress) {
+                    document.querySelector('#' + this.processingID + ' .upload_status').style.opacity = "0";
+                });
+                this.on("complete", function (file) {
+                    var responseJSON = jQuery.parseJSON(file.xhr.response);
+                    if (parseInt(responseJSON.error) == 1) {
+                        window.alert(responseJSON.msg);
+                        jQuery('#' + this.processingID + ' .uploading_info').html("<span style='color:#FF0000'>上传失败</span>");
+                    } else {
+                        jQuery('#' + this.processingID + ' .uploading_info').html("上传成功");
+                    }
+                    resetUploaderController();
+                });
+            }
+        });
+        var resetUploaderController = function () {
+            MyDropZone.removeAllFiles(true);
+            MyDropZone.enable();
+        };
+        var formatBytes = function (bytes, decimals) {
+            if (bytes == 0) return '0 Bytes';
+            var k = 1000,
+                dm = decimals + 1 || 2,
+                sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+                i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        };
+
+        var createFileDetail = function (fileInfo, processID) {
+            var domString = '<div class="file_list_inner" id="' + processID + '"><ul><li class="file_name">';
+            domString += fileInfo.name;
+            domString += '</li><li>';
+            domString += formatBytes(fileInfo.size);
+            domString += '</li><li class="uploading_info">正在上传...</li></ul><div class="upload_status"></div></div>';
+
+            jQuery("#file_list").append(domString);
+        };
+    });
+</script>
+</body>
+</html>
