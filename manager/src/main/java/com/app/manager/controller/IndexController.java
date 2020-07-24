@@ -61,7 +61,7 @@ public class IndexController {
 
     @GetMapping("/uploadStatus")
     public String uploadStatus() {
-        return "OK";
+        return "ios";
     }
 
 }
