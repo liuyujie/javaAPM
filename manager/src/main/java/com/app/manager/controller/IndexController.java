@@ -49,6 +49,8 @@ public class IndexController {
 
             System.out.println(map.toString() + map.keySet().toString());
 
+            QiNiuUtil.uploadIPAToQiNiu(path.toFile().getAbsolutePath());
+
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
