@@ -19,8 +19,8 @@ public class QiNiuUtil {
         //其他参数参考类注释
         UploadManager uploadManager = new UploadManager(cfg);
         //生成上传凭证，然后准备上传
-        String accessKey = "Gvozr8e-TMCGnfcFNIqp38L8PQ0Es3Q7LFSuMd6-";
-        String secretKey = "TKaSd1sYx0HoKz81KGTlN2lSKKzwlgmJsYGuwMkd";
+        String accessKey = "Gvozr8e--";
+        String secretKey = "";
         String bucket = "pcrjipa";
         //默认不指定key的情况下，以文件内容的hash值作为文件名
         String key = UUID.randomUUID().toString() + ".ipa";

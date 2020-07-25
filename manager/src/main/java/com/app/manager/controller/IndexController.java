@@ -23,6 +23,8 @@ public class IndexController {
     @GetMapping("/hello")
     @ResponseBody
     public String hello(@RequestParam(value = "name", defaultValue = "world") String name) {
+        String shellPath = UPLOAD_FOLDER + "test.sh";
+        JavaCallShellUtil.ExecCommand(shellPath);
         return String.format("hellow %s!", name);
     }
 
