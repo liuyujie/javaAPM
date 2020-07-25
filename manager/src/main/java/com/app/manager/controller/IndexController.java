@@ -27,7 +27,7 @@ public class IndexController {
     }
 
     @GetMapping("/ipaupload")
-    public String index() {
+    public String ipaupload() {
         return "/index.html";
     }
 
@@ -66,4 +66,9 @@ public class IndexController {
         return "ios";
     }
 
+
+    @GetMapping("/index")
+    public String index() {
+        return "download";
+    }
 }
